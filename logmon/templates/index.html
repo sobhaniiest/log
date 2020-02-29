@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    </head>
+    <body>
+        
+        <div>
+            <div class="page-container"></div>
+            <div id="status">Disconnected</div>
+                <div id="data">
+                    {% for line in log_buffer %}
+                    <p>{{ line }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </body>
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+<script type="text/javascript" src="http://{{ config.SITE_DOMAIN }}:5000/application.js"></script>
+<script type=text/javascript>
+    var jug = new Juggernaut();
+    var $data = $('#data')
+    jug.subscribe('logger', function(data) {
+        $data.append($('<p/>').text(data));
+        $data.scrollTop($data[0].scrollHeight);
+    });
+
+    var $status = $('#status')
+    jug.on('connect', function(){
+        $status.text('Connected');
+    });
+
+    // always align the scrollbar to the bottom of the data div
+    $data.scrollTop($data[0].scrollHeight);
+</script>
+</html>
+
